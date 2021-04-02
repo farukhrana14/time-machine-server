@@ -37,10 +37,8 @@ client.connect(err => {
 
     //get single product by 
     app.get('/orders/:id', (req, res)=>{
-        console.log(req.params.id);
         productsCollection.find({_id: ObjectID(req.params.id)})
         .toArray((err, documents)=> {
-            console.log(err, documents);
             res.send(documents[0]);
         })
     })
@@ -54,6 +52,14 @@ client.connect(err => {
         })
     })
 
+    //Delete One
+    app.get('/deleteProduct/:id', (req, res)=>{
+        console.log('req received', req.params.id);
+        productsCollection.deleteOne({_id: ObjectID(req.params.id)})
+        .then(result => {
+            res.send(result.deletedCount > 0);
+        })
+    })
 
 });
 
