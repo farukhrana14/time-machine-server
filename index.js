@@ -24,7 +24,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 client.connect(err => {
     const productsCollection = client.db(`${process.env.DB_NAME}`).collection("products");
+    const ordersCollection = client.db(`${process.env.DB_NAME}`).collection('orders');
 
+    
     // get all products 
     app.get('/allProducts', (req, res) => {
         productsCollection.find()
@@ -33,7 +35,24 @@ client.connect(err => {
         })
     })    
 
+    //get single product by 
+    app.get('/orders/:id', (req, res)=>{
+        console.log(req.params.id);
+        productsCollection.find({_id: ObjectID(req.params.id)})
+        .toArray((err, documents)=> {
+            console.log(err, documents);
+            res.send(documents[0]);
+        })
+    })
 
+    //API for placing orders by POST
+    app.post('/addOrder', (req, res)=> {
+        const order = req.body;
+        ordersCollection.insertOne(order)
+        .then(result => {
+            res.send(result.insertedCount > 0);
+        })
+    })
 
 
 });
