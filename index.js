@@ -52,6 +52,14 @@ client.connect(err => {
         })
     })
 
+    app.post('/addProduct', (req, res) => {
+        const newProduct = req.body;
+        productsCollection.insertOne(newProduct)
+        .then(result => {
+            res.send(result.insertedCount > 0)
+        })
+    })
+
     //Delete One
     app.get('/deleteProduct/:id', (req, res)=>{
         console.log('req received', req.params.id);
